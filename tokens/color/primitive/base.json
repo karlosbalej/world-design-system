@@ -1,7 +1,6 @@
 {
   "color": {
     "grey": {
-      "0":   { "$value": "#FFFFFF", "$type": "color" },
       "50":  { "$value": "#F9FAFB", "$type": "color" },
       "100": { "$value": "#F2F3F5", "$type": "color" },
       "200": { "$value": "#EAEBED", "$type": "color" },
@@ -14,6 +13,7 @@
       "900": { "$value": "#3F4144", "$type": "color" },
       "950": { "$value": "#17181A", "$type": "color" }
     },
+    "white": { "$value": "#FFFFFF", "$type": "color" },
     "black": { "$value": "#000000", "$type": "color" },
     "error": {
       "100": { "$value": "#FFF8F7", "$type": "color" },
