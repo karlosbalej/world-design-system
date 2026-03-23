@@ -1,9 +1,5 @@
 {
   "color": {
-    "worldBlue": {
-      "loud":   { "$value": "#3FDBED", "$type": "color" },
-      "silent": { "$value": "#ECFBFD", "$type": "color" }
-    },
     "carrotOrange": {
       "loud":   { "$value": "#FF5A00", "$type": "color" },
       "silent": { "$value": "#FFEDE6", "$type": "color" }

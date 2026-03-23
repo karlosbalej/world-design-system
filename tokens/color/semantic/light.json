@@ -1,38 +1,77 @@
 {
   "semantic": {
-    "background": {
+    "surface": {
       "primary":   { "$value": "{color.grey.0}",   "$type": "color" },
       "secondary": { "$value": "{color.grey.50}",  "$type": "color" },
-      "tertiary":  { "$value": "{color.grey.100}", "$type": "color" }
+      "tertiary":  { "$value": "{color.grey.100}", "$type": "color" },
+      "overlay":   { "$value": "#00000080",        "$type": "color" },
+      "elevated":  { "$value": "{color.grey.0}",   "$type": "color" }
     },
     "text": {
-      "primary":   { "$value": "{color.grey.900}", "$type": "color" },
-      "secondary": { "$value": "{color.grey.500}", "$type": "color" },
-      "tertiary":  { "$value": "{color.grey.400}", "$type": "color" },
-      "inverse":   { "$value": "{color.grey.0}",   "$type": "color" }
+      "primary":   { "$value": "{color.grey.950}", "$type": "color" },
+      "secondary": { "$value": "{color.grey.700}", "$type": "color" },
+      "tertiary":  { "$value": "{color.grey.600}", "$type": "color" },
+      "inverse":   { "$value": "{color.grey.0}",   "$type": "color" },
+      "link":      { "$value": "{color.info.600}",  "$type": "color" }
+    },
+    "icon": {
+      "primary":  { "$value": "{color.grey.950}", "$type": "color" },
+      "secondary":{ "$value": "{color.grey.600}", "$type": "color" },
+      "tertiary": { "$value": "{color.grey.500}", "$type": "color" },
+      "disabled": { "$value": "{color.grey.400}", "$type": "color" },
+      "inverse":  { "$value": "{color.grey.0}",   "$type": "color" }
     },
     "border": {
+      "subtle":  { "$value": "{color.grey.100}", "$type": "color" },
       "default": { "$value": "{color.grey.200}", "$type": "color" },
-      "strong":  { "$value": "{color.grey.300}", "$type": "color" }
+      "strong":  { "$value": "{color.grey.300}", "$type": "color" },
+      "focus":   { "$value": "{color.grey.950}", "$type": "color" }
     },
     "action": {
-      "primary":        { "$value": "{color.grey.900}", "$type": "color" },
-      "primaryContent": { "$value": "{color.grey.0}",   "$type": "color" },
-      "secondary":      { "$value": "{color.grey.100}", "$type": "color" },
-      "disabled":       { "$value": "{color.grey.200}", "$type": "color" },
-      "disabledContent":{ "$value": "{color.grey.400}", "$type": "color" }
+      "primary":          { "$value": "{color.grey.950}", "$type": "color" },
+      "primaryContent":   { "$value": "{color.grey.0}",   "$type": "color" },
+      "secondary":        { "$value": "{color.grey.0}",   "$type": "color" },
+      "secondaryBorder":  { "$value": "{color.grey.200}", "$type": "color" },
+      "secondaryContent": { "$value": "{color.grey.950}", "$type": "color" },
+      "tertiary":         { "$value": "{color.grey.100}", "$type": "color" },
+      "tertiaryContent":  { "$value": "{color.grey.950}", "$type": "color" },
+      "disabled":         { "$value": "{color.grey.200}", "$type": "color" },
+      "disabledContent":  { "$value": "{color.grey.500}", "$type": "color" }
+    },
+    "control": {
+      "on":        { "$value": "{color.grey.950}", "$type": "color" },
+      "off":       { "$value": "{color.grey.300}", "$type": "color" },
+      "thumb":     { "$value": "{color.grey.0}",   "$type": "color" },
+      "onContent": { "$value": "{color.grey.0}",   "$type": "color" }
+    },
+    "input": {
+      "background":      { "$value": "{color.grey.100}", "$type": "color" },
+      "backgroundFocus": { "$value": "{color.grey.0}",   "$type": "color" },
+      "text":            { "$value": "{color.grey.950}", "$type": "color" },
+      "placeholder":     { "$value": "{color.grey.700}", "$type": "color" },
+      "divider":         { "$value": "{color.grey.300}", "$type": "color" },
+      "error":           { "$value": "{color.error.600}","$type": "color" }
     },
     "status": {
-      "error":   { "$value": "{color.error.600}",   "$type": "color" },
-      "warning": { "$value": "{color.warning.600}", "$type": "color" },
-      "success": { "$value": "{color.success.600}", "$type": "color" },
-      "info":    { "$value": "{color.info.600}",    "$type": "color" }
+      "error":             { "$value": "{color.error.600}",   "$type": "color" },
+      "warning":           { "$value": "{color.warning.700}", "$type": "color" },
+      "success":           { "$value": "{color.success.700}", "$type": "color" },
+      "info":              { "$value": "{color.info.600}",    "$type": "color" },
+      "errorBackground":   { "$value": "{color.error.100}",   "$type": "color" },
+      "warningBackground": { "$value": "{color.warning.100}", "$type": "color" },
+      "successBackground": { "$value": "{color.success.100}", "$type": "color" },
+      "infoBackground":    { "$value": "{color.info.100}",    "$type": "color" }
+    },
+    "badge": {
+      "background": { "$value": "{color.error.600}", "$type": "color" },
+      "text":       { "$value": "{color.grey.0}",    "$type": "color" },
+      "border":     { "$value": "{color.grey.0}",    "$type": "color" }
     },
     "tabBar": {
-      "selected":   { "$value": "{color.grey.900}", "$type": "color" },
-      "unselected": { "$value": "{color.grey.450}", "$type": "color" },
+      "selected":   { "$value": "{color.grey.950}", "$type": "color" },
+      "unselected": { "$value": "{color.grey.600}", "$type": "color" },
       "background": { "$value": "{color.grey.0}",   "$type": "color" },
-      "border":     { "$value": "{color.grey.200}", "$type": "color" }
+      "border":     { "$value": "{color.grey.100}", "$type": "color" }
     }
   }
 }

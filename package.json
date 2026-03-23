@@ -8,13 +8,18 @@
     "build": "tsx config.ts",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
-    "clean": "rm -rf build"
+    "clean": "rm -rf build",
+    "generate:palette": "tsx scripts/generate-palette.ts",
+    "check:contrast": "tsx scripts/check-contrast.ts",
+    "push:figma": "tsx scripts/push-figma-variables.ts"
   },
   "dependencies": {
     "style-dictionary": "^5.3.3"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",
+    "apca-w3": "^0.1.9",
+    "culori": "^4.0.2",
     "oxlint": "^1.51.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

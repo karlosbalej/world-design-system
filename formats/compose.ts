@@ -8,8 +8,14 @@ import type { TypographyTokenValue, FontWeightKey } from './types.js';
 const PACKAGE = 'com.jaidensiu.worldDesignSystem';
 
 function hexToArgb(hex: string): string {
-  const h = hex.replace('#', '');
-  return `0xFF${h.toUpperCase()}`;
+  const h = hex.replace('#', '').toUpperCase();
+  if (h.length === 8) {
+    // Hex-8: #RRGGBBAA → Compose needs 0xAARRGGBB
+    const rgb = h.slice(0, 6);
+    const alpha = h.slice(6, 8);
+    return `0x${alpha}${rgb}`;
+  }
+  return `0xFF${h}`;
 }
 
 function camelCase(path: string[]): string {
