@@ -1,0 +1,79 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`payload snapshot > produces correct variable + mode value structure from fixture data 1`] = `
+[
+  {
+    "action": "CREATE",
+    "codeSyntax": {
+      "ANDROID": "Wds.colors.surfacePrimary",
+      "WEB": "var(--wds-surface-primary)",
+      "iOS": "WdsTheme.light.surfacePrimary",
+    },
+    "description": "Main background",
+    "id": "temp_2",
+    "name": "surface/primary",
+    "resolvedType": "COLOR",
+    "scopes": [
+      "FRAME_FILL",
+      "SHAPE_FILL",
+    ],
+  },
+  {
+    "action": "CREATE",
+    "codeSyntax": {
+      "ANDROID": "Wds.colors.surfaceOverlay",
+      "WEB": "var(--wds-surface-overlay)",
+      "iOS": "WdsTheme.light.surfaceOverlay",
+    },
+    "description": "Scrim behind modals",
+    "id": "temp_3",
+    "name": "surface/overlay",
+    "resolvedType": "COLOR",
+    "scopes": [
+      "FRAME_FILL",
+      "SHAPE_FILL",
+    ],
+  },
+]
+`;
+
+exports[`payload snapshot > produces correct variable + mode value structure from fixture data 2`] = `
+[
+  {
+    "modeId": "light-mode",
+    "value": {
+      "id": "temp_0",
+      "type": "VARIABLE_ALIAS",
+    },
+    "variableId": "temp_2",
+  },
+  {
+    "modeId": "dark-mode",
+    "value": {
+      "id": "temp_1",
+      "type": "VARIABLE_ALIAS",
+    },
+    "variableId": "temp_2",
+  },
+  {
+    "modeId": "light-mode",
+    "value": {
+      "a": 0.8,
+      "b": 0,
+      "g": 0,
+      "r": 0,
+    },
+    "variableId": "temp_3",
+  },
+  {
+    "modeId": "dark-mode",
+    "value": {
+      "a": 0.8,
+      "b": 0,
+      "g": 0,
+      "r": 0,
+    },
+    "variableId": "temp_3",
+  },
+]
+`;

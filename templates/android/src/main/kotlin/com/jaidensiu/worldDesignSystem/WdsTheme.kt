@@ -6,12 +6,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-/**
- * Semantic color interface for the World Design System.
- * All fields map to semantic token names.
- */
 data class WdsColors(
-    // Background
+    // Surface
     val surfacePrimary: Color,
     val surfaceSecondary: Color,
     val surfaceTertiary: Color,
@@ -21,8 +17,8 @@ data class WdsColors(
     val textPrimary: Color,
     val textSecondary: Color,
     val textTertiary: Color,
+    val textDisabled: Color,
     val textInverse: Color,
-    val textLink: Color,
     // Icon
     val iconPrimary: Color,
     val iconSecondary: Color,
@@ -34,21 +30,21 @@ data class WdsColors(
     val borderDefault: Color,
     val borderStrong: Color,
     val borderFocus: Color,
+    val borderDivider: Color,
+    val borderTranslucent: Color,
     // Action
     val actionPrimary: Color,
     val actionPrimaryContent: Color,
     val actionSecondary: Color,
-    val actionSecondaryBorder: Color,
     val actionSecondaryContent: Color,
     val actionTertiary: Color,
     val actionTertiaryContent: Color,
+    val actionDestructive: Color,
+    val actionDestructiveContent: Color,
     val actionDisabled: Color,
     val actionDisabledContent: Color,
-    // Control
-    val controlOn: Color,
-    val controlOff: Color,
-    val controlThumb: Color,
-    val controlOnContent: Color,
+    val actionGhost: Color,
+    val actionGhostContent: Color,
     // Input
     val inputBackground: Color,
     val inputBackgroundFocus: Color,
@@ -65,15 +61,9 @@ data class WdsColors(
     val statusWarningBackground: Color,
     val statusSuccessBackground: Color,
     val statusInfoBackground: Color,
-    // Badge
-    val badgeBackground: Color,
-    val badgeText: Color,
-    val badgeBorder: Color,
-    // Tab Bar
-    val tabBarSelected: Color,
-    val tabBarUnselected: Color,
-    val tabBarBackground: Color,
-    val tabBarBorder: Color,
+    // Accent
+    val accentPrimary: Color,
+    val accentContent: Color,
 )
 
 fun lightColors() = WdsColors(
@@ -85,8 +75,8 @@ fun lightColors() = WdsColors(
     textPrimary = WdsLightColorTokens.textPrimary,
     textSecondary = WdsLightColorTokens.textSecondary,
     textTertiary = WdsLightColorTokens.textTertiary,
+    textDisabled = WdsLightColorTokens.textDisabled,
     textInverse = WdsLightColorTokens.textInverse,
-    textLink = WdsLightColorTokens.textLink,
     iconPrimary = WdsLightColorTokens.iconPrimary,
     iconSecondary = WdsLightColorTokens.iconSecondary,
     iconTertiary = WdsLightColorTokens.iconTertiary,
@@ -96,19 +86,20 @@ fun lightColors() = WdsColors(
     borderDefault = WdsLightColorTokens.borderDefault,
     borderStrong = WdsLightColorTokens.borderStrong,
     borderFocus = WdsLightColorTokens.borderFocus,
+    borderDivider = WdsLightColorTokens.borderDivider,
+    borderTranslucent = WdsLightColorTokens.borderTranslucent,
     actionPrimary = WdsLightColorTokens.actionPrimary,
     actionPrimaryContent = WdsLightColorTokens.actionPrimaryContent,
     actionSecondary = WdsLightColorTokens.actionSecondary,
-    actionSecondaryBorder = WdsLightColorTokens.actionSecondaryBorder,
     actionSecondaryContent = WdsLightColorTokens.actionSecondaryContent,
     actionTertiary = WdsLightColorTokens.actionTertiary,
     actionTertiaryContent = WdsLightColorTokens.actionTertiaryContent,
+    actionDestructive = WdsLightColorTokens.actionDestructive,
+    actionDestructiveContent = WdsLightColorTokens.actionDestructiveContent,
     actionDisabled = WdsLightColorTokens.actionDisabled,
     actionDisabledContent = WdsLightColorTokens.actionDisabledContent,
-    controlOn = WdsLightColorTokens.controlOn,
-    controlOff = WdsLightColorTokens.controlOff,
-    controlThumb = WdsLightColorTokens.controlThumb,
-    controlOnContent = WdsLightColorTokens.controlOnContent,
+    actionGhost = WdsLightColorTokens.actionGhost,
+    actionGhostContent = WdsLightColorTokens.actionGhostContent,
     inputBackground = WdsLightColorTokens.inputBackground,
     inputBackgroundFocus = WdsLightColorTokens.inputBackgroundFocus,
     inputText = WdsLightColorTokens.inputText,
@@ -123,13 +114,8 @@ fun lightColors() = WdsColors(
     statusWarningBackground = WdsLightColorTokens.statusWarningBackground,
     statusSuccessBackground = WdsLightColorTokens.statusSuccessBackground,
     statusInfoBackground = WdsLightColorTokens.statusInfoBackground,
-    badgeBackground = WdsLightColorTokens.badgeBackground,
-    badgeText = WdsLightColorTokens.badgeText,
-    badgeBorder = WdsLightColorTokens.badgeBorder,
-    tabBarSelected = WdsLightColorTokens.tabBarSelected,
-    tabBarUnselected = WdsLightColorTokens.tabBarUnselected,
-    tabBarBackground = WdsLightColorTokens.tabBarBackground,
-    tabBarBorder = WdsLightColorTokens.tabBarBorder,
+    accentPrimary = WdsLightColorTokens.accentPrimary,
+    accentContent = WdsLightColorTokens.accentContent,
 )
 
 fun darkColors() = WdsColors(
@@ -141,8 +127,8 @@ fun darkColors() = WdsColors(
     textPrimary = WdsDarkColorTokens.textPrimary,
     textSecondary = WdsDarkColorTokens.textSecondary,
     textTertiary = WdsDarkColorTokens.textTertiary,
+    textDisabled = WdsDarkColorTokens.textDisabled,
     textInverse = WdsDarkColorTokens.textInverse,
-    textLink = WdsDarkColorTokens.textLink,
     iconPrimary = WdsDarkColorTokens.iconPrimary,
     iconSecondary = WdsDarkColorTokens.iconSecondary,
     iconTertiary = WdsDarkColorTokens.iconTertiary,
@@ -152,19 +138,20 @@ fun darkColors() = WdsColors(
     borderDefault = WdsDarkColorTokens.borderDefault,
     borderStrong = WdsDarkColorTokens.borderStrong,
     borderFocus = WdsDarkColorTokens.borderFocus,
+    borderDivider = WdsDarkColorTokens.borderDivider,
+    borderTranslucent = WdsDarkColorTokens.borderTranslucent,
     actionPrimary = WdsDarkColorTokens.actionPrimary,
     actionPrimaryContent = WdsDarkColorTokens.actionPrimaryContent,
     actionSecondary = WdsDarkColorTokens.actionSecondary,
-    actionSecondaryBorder = WdsDarkColorTokens.actionSecondaryBorder,
     actionSecondaryContent = WdsDarkColorTokens.actionSecondaryContent,
     actionTertiary = WdsDarkColorTokens.actionTertiary,
     actionTertiaryContent = WdsDarkColorTokens.actionTertiaryContent,
+    actionDestructive = WdsDarkColorTokens.actionDestructive,
+    actionDestructiveContent = WdsDarkColorTokens.actionDestructiveContent,
     actionDisabled = WdsDarkColorTokens.actionDisabled,
     actionDisabledContent = WdsDarkColorTokens.actionDisabledContent,
-    controlOn = WdsDarkColorTokens.controlOn,
-    controlOff = WdsDarkColorTokens.controlOff,
-    controlThumb = WdsDarkColorTokens.controlThumb,
-    controlOnContent = WdsDarkColorTokens.controlOnContent,
+    actionGhost = WdsDarkColorTokens.actionGhost,
+    actionGhostContent = WdsDarkColorTokens.actionGhostContent,
     inputBackground = WdsDarkColorTokens.inputBackground,
     inputBackgroundFocus = WdsDarkColorTokens.inputBackgroundFocus,
     inputText = WdsDarkColorTokens.inputText,
@@ -179,13 +166,8 @@ fun darkColors() = WdsColors(
     statusWarningBackground = WdsDarkColorTokens.statusWarningBackground,
     statusSuccessBackground = WdsDarkColorTokens.statusSuccessBackground,
     statusInfoBackground = WdsDarkColorTokens.statusInfoBackground,
-    badgeBackground = WdsDarkColorTokens.badgeBackground,
-    badgeText = WdsDarkColorTokens.badgeText,
-    badgeBorder = WdsDarkColorTokens.badgeBorder,
-    tabBarSelected = WdsDarkColorTokens.tabBarSelected,
-    tabBarUnselected = WdsDarkColorTokens.tabBarUnselected,
-    tabBarBackground = WdsDarkColorTokens.tabBarBackground,
-    tabBarBorder = WdsDarkColorTokens.tabBarBorder,
+    accentPrimary = WdsDarkColorTokens.accentPrimary,
+    accentContent = WdsDarkColorTokens.accentContent,
 )
 
 val LocalWdsColors = staticCompositionLocalOf { lightColors() }

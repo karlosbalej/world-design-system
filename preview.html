@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDS Color Token Preview</title>
+<link rel="stylesheet" href="build/web/wds-color-palette.css">
+<link rel="stylesheet" href="build/web/wds-light-theme.css">
+<link rel="stylesheet" href="build/web/wds-dark-theme.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", system-ui, sans-serif;
+    background: var(--wds-surface-primary);
+    color: var(--wds-text-primary);
+    padding: 32px;
+    transition: background 0.25s, color 0.25s;
+    line-height: 1.5;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 32px 0 16px; letter-spacing: -0.3px; }
+  h3 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--wds-text-secondary); margin-bottom: 12px; }
+
+  .toggle-btn {
+    padding: 8px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--wds-border-default);
+    background: var(--wds-surface-secondary);
+    color: var(--wds-text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toggle-btn:hover { background: var(--wds-surface-tertiary); }
+
+  .scale-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .swatch {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 500;
+    border: 1px solid var(--wds-border-default);
+    transition: transform 0.15s;
+    position: relative;
+  }
+  .swatch:hover { transform: scale(1.08); z-index: 1; }
+  .swatch .step { opacity: 0.7; font-size: 9px; }
+  .swatch .hex { font-family: "SF Mono", "Fira Code", monospace; font-size: 9px; }
+
+  .semantic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .semantic-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--wds-surface-secondary);
+    border: 1px solid var(--wds-border-default);
+  }
+
+  .semantic-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    border: 1px solid var(--wds-border-default);
+  }
+
+  .semantic-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wds-text-primary);
+  }
+
+  .semantic-hex {
+    font-size: 11px;
+    font-family: "SF Mono", "Fira Code", monospace;
+    color: var(--wds-text-secondary);
+  }
+
+  .section-divider {
+    height: 1px;
+    background: var(--wds-separator-default);
+    margin: 40px 0;
+  }
+
+  .demo-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .demo-card {
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--wds-border-default);
+  }
+
+  .demo-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .demo-card p { font-size: 13px; margin-bottom: 8px; }
+
+  .demo-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 8px;
+  }
+
+  .banner {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .swatch { width: 56px; height: 56px; }
+    .demo-section { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>World Design System</h1>
+  <button class="toggle-btn" onclick="toggleTheme()">Switch to Dark</button>
+</header>
+
+<h2>Primitive Scales</h2>
+
+<h3>Grey (cool neutral)</h3>
+<div class="scale-row" id="grey-scale"></div>
+
+<h3>Error</h3>
+<div class="scale-row" id="error-scale"></div>
+
+<h3>Warning</h3>
+<div class="scale-row" id="warning-scale"></div>
+
+<h3>Success</h3>
+<div class="scale-row" id="success-scale"></div>
+
+<h3>Info</h3>
+<div class="scale-row" id="info-scale"></div>
+
+<h3>Specialty</h3>
+<div class="scale-row" id="specialty-scale"></div>
+
+<div class="section-divider"></div>
+
+<h2>Semantic Tokens</h2>
+
+<h3>Surface</h3>
+<div class="semantic-grid" id="sem-surface"></div>
+
+<h3>Text</h3>
+<div class="semantic-grid" id="sem-text"></div>
+
+<h3>Icon</h3>
+<div class="semantic-grid" id="sem-icon"></div>
+
+<h3>Border</h3>
+<div class="semantic-grid" id="sem-border"></div>
+
+<h3>Action</h3>
+<div class="semantic-grid" id="sem-action"></div>
+
+<h3>Input</h3>
+<div class="semantic-grid" id="sem-input"></div>
+
+<h3>Status</h3>
+<div class="semantic-grid" id="sem-status"></div>
+
+<h3>Accent</h3>
+<div class="semantic-grid" id="sem-accent"></div>
+
+<div class="section-divider"></div>
+
+<h2>Live Components</h2>
+<div class="demo-section">
+  <div class="demo-card" style="background: var(--wds-surface-primary);">
+    <h4 style="color: var(--wds-text-primary);">Primary Surface</h4>
+    <p style="color: var(--wds-text-primary);">Primary text on primary surface</p>
+    <p style="color: var(--wds-text-secondary);">Secondary text for supporting info</p>
+    <p style="color: var(--wds-text-tertiary);">Tertiary text, less prominent</p>
+    <div style="margin-top: 12px;">
+      <button class="demo-btn" style="background: var(--wds-action-primary); color: var(--wds-action-primary-content);">Primary</button>
+      <button class="demo-btn" style="background: var(--wds-action-secondary); color: var(--wds-action-secondary-content);">Secondary</button>
+      <button class="demo-btn" style="background: var(--wds-action-tertiary); color: var(--wds-action-tertiary-content); border: 1px solid var(--wds-border-default);">Tertiary</button>
+      <button class="demo-btn" style="background: var(--wds-action-destructive); color: var(--wds-action-destructive-content);">Destructive</button>
+      <button class="demo-btn" style="background: var(--wds-action-disabled); color: var(--wds-action-disabled-content);">Disabled</button>
+      <button class="demo-btn" style="background: var(--wds-action-ghost); color: var(--wds-action-ghost-content); backdrop-filter: blur(8px);">Ghost</button>
+    </div>
+  </div>
+  <div class="demo-card" style="background: var(--wds-surface-elevated);">
+    <h4 style="color: var(--wds-text-primary);">Elevated Surface</h4>
+    <p style="color: var(--wds-text-primary);">Sheet / modal content</p>
+    <input type="text" placeholder="Placeholder text..." style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--wds-border-default); background: var(--wds-input-background); color: var(--wds-input-text); font-size: 14px; margin-top: 8px; outline: none;">
+    <input type="text" placeholder="Focus state" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 2px solid var(--wds-border-focus); background: var(--wds-input-background-focus); color: var(--wds-input-text); font-size: 14px; margin-top: 8px; outline: none;">
+    <input type="text" placeholder="Error state" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 2px solid var(--wds-input-error); background: var(--wds-input-background); color: var(--wds-input-text); font-size: 14px; margin-top: 8px; outline: none;">
+  </div>
+</div>
+
+<h3>Feedback Banners</h3>
+<div style="max-width: 500px;">
+  <div class="banner" style="background: var(--wds-status-error-background); color: var(--wds-text-primary); border-left: 3px solid var(--wds-status-error);">Error: Something went wrong.</div>
+  <div class="banner" style="background: var(--wds-status-warning-background); color: var(--wds-text-primary); border-left: 3px solid var(--wds-status-warning);">Warning: Check your input.</div>
+  <div class="banner" style="background: var(--wds-status-success-background); color: var(--wds-text-primary); border-left: 3px solid var(--wds-status-success);">Success: Identity verified.</div>
+  <div class="banner" style="background: var(--wds-status-info-background); color: var(--wds-text-primary); border-left: 3px solid var(--wds-status-info);">Info: Update available.</div>
+</div>
+
+<script>
+const primitives = {
+  grey: [
+    ['white','#FFFFFF'],['100','#F2F3F5'],['200','#EAEBED'],['300','#D7D9DC'],['400','#B5B7BA'],
+    ['500','#9FA2A5'],['600','#8A8C8F'],['700','#747679'],['800','#595B5E'],['900','#3F4144'],['950','#17181A']
+  ],
+  error: [['100','#FFF8F7'],['200','#FFD7D1'],['300','#FFB4A8'],['400','#FF8D7E'],['500','#FC6150'],['600','#F2261D'],['700','#B8110C'],['800','#7F0001'],['900','#490000'],['950','#2D0000']],
+  warning: [['100','#FFF9F1'],['200','#FFEBD0'],['300','#FFDDAD'],['400','#FFCE87'],['500','#FFBF5A'],['600','#FEAF00'],['700','#B47A00'],['800','#6F4A00'],['900','#311F00'],['950','#1A0F00']],
+  success: [['100','#F1FEF1'],['200','#CEF4CE'],['300','#AAE8AB'],['400','#84DC88'],['500','#58CF62'],['600','#00C235'],['700','#008C24'],['800','#005A14'],['900','#002C06'],['950','#001803']],
+  info: [['100','#F7FAFF'],['200','#CADEFF'],['300','#9CC2FF'],['400','#6DA4FF'],['500','#3A84FF'],['600','#0064EE'],['700','#004BB7'],['800','#003484'],['900','#001E53'],['950','#001030']],
+};
+
+const specialty = [
+  ['World Blue','#3FDBED'],['WB Silent','#ECFBFD'],['Carrot','#FF5A00'],['CO Silent','#FFEDE6'],
+  ['Purple','#8600FF'],['P Silent','#F2E6FF'],['Invites','#00C3B6'],['DeepSky','#007CFB'],
+  ['SkyLight','#61BFFF'],['DarkMod','#2D3A78'],['DarkBlue','#0D1836'],['CredCard','#FFF6D7']
+];
+
+function luminance(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const R = r<=0.03928?r/12.92:((r+0.055)/1.055)**2.4;
+  const G = g<=0.03928?g/12.92:((g+0.055)/1.055)**2.4;
+  const B = b<=0.03928?b/12.92:((b+0.055)/1.055)**2.4;
+  return 0.2126*R+0.7152*G+0.0722*B;
+}
+
+function textColor(hex) { return luminance(hex) > 0.4 ? '#17181A' : '#FFFFFF'; }
+
+function renderScale(id, steps) {
+  const el = document.getElementById(id);
+  el.innerHTML = steps.map(([step, hex]) =>
+    `<div class="swatch" style="background:${hex};color:${textColor(hex)}">
+      <span class="step">${step}</span>
+      <span class="hex">${hex}</span>
+    </div>`
+  ).join('');
+}
+
+function renderSemantic(id, tokens) {
+  const el = document.getElementById(id);
+  el.innerHTML = tokens.map(([name, cssVar]) => {
+    const hex = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+    return `<div class="semantic-card">
+      <div class="semantic-swatch" style="background: var(${cssVar})"></div>
+      <div>
+        <div class="semantic-label">${name}</div>
+        <div class="semantic-hex">${hex || cssVar}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+Object.entries(primitives).forEach(([name, steps]) => renderScale(name + '-scale', steps));
+document.getElementById('specialty-scale').innerHTML = specialty.map(([name, hex]) =>
+  `<div class="swatch" style="background:${hex};color:${textColor(hex)}">
+    <span class="step">${name}</span>
+    <span class="hex">${hex}</span>
+  </div>`
+).join('');
+
+function renderAllSemantic() {
+  renderSemantic('sem-surface', [
+    ['surface.primary','--wds-surface-primary'],['surface.secondary','--wds-surface-secondary'],
+    ['surface.tertiary','--wds-surface-tertiary'],['surface.overlay','--wds-surface-overlay'],
+    ['surface.elevated','--wds-surface-elevated'],
+  ]);
+  renderSemantic('sem-text', [
+    ['text.primary','--wds-text-primary'],['text.secondary','--wds-text-secondary'],
+    ['text.tertiary','--wds-text-tertiary'],['text.disabled','--wds-text-disabled'],
+    ['text.inverse','--wds-text-inverse'],
+  ]);
+  renderSemantic('sem-icon', [
+    ['icon.primary','--wds-icon-primary'],['icon.secondary','--wds-icon-secondary'],
+    ['icon.tertiary','--wds-icon-tertiary'],['icon.disabled','--wds-icon-disabled'],
+    ['icon.inverse','--wds-icon-inverse'],
+  ]);
+  renderSemantic('sem-border', [
+    ['border.subtle','--wds-border-subtle'],['border.default','--wds-border-default'],
+    ['border.strong','--wds-border-strong'],    ['border.focus','--wds-border-focus'],
+    ['border.divider','--wds-border-divider'],
+    ['border.translucent','--wds-border-translucent'],
+  ]);
+  renderSemantic('sem-action', [
+    ['action.primary','--wds-action-primary'],['action.primaryContent','--wds-action-primary-content'],
+    ['action.secondary','--wds-action-secondary'],['action.secondaryContent','--wds-action-secondary-content'],
+    ['action.tertiary','--wds-action-tertiary'],['action.tertiaryContent','--wds-action-tertiary-content'],
+    ['action.destructive','--wds-action-destructive'],['action.destructiveContent','--wds-action-destructive-content'],
+    ['action.disabled','--wds-action-disabled'],['action.disabledContent','--wds-action-disabled-content'],
+    ['action.ghost','--wds-action-ghost'],['action.ghostContent','--wds-action-ghost-content'],
+  ]);
+  renderSemantic('sem-input', [
+    ['input.background','--wds-input-background'],['input.backgroundFocus','--wds-input-background-focus'],
+    ['input.text','--wds-input-text'],['input.placeholder','--wds-input-placeholder'],
+    ['input.divider','--wds-input-divider'],['input.error','--wds-input-error'],
+  ]);
+  renderSemantic('sem-status', [
+    ['status.error','--wds-status-error'],['status.warning','--wds-status-warning'],
+    ['status.success','--wds-status-success'],['status.info','--wds-status-info'],
+    ['status.errorBackground','--wds-status-error-background'],['status.warningBackground','--wds-status-warning-background'],
+    ['status.successBackground','--wds-status-success-background'],['status.infoBackground','--wds-status-info-background'],
+  ]);
+  renderSemantic('sem-accent', [
+    ['accent.primary','--wds-accent-primary'],['accent.content','--wds-accent-content'],
+  ]);
+}
+
+renderAllSemantic();
+
+let isDark = false;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.querySelector('.toggle-btn').textContent = isDark ? 'Switch to Light' : 'Switch to Dark';
+  setTimeout(renderAllSemantic, 50);
+}
+</script>
+</body>
+</html>

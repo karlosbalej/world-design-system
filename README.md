@@ -184,6 +184,23 @@ import typography from "@jaidensiu/world-design-system/typography.json";
 import spacing from "@jaidensiu/world-design-system/spacing.json";
 ```
 
+## Color Architecture
+
+**Figma is the source of truth** for primitive color values. The palette uses a clean 100–950 step scale:
+
+| Scale | Steps | Description |
+|-------|-------|-------------|
+| `grey` | 100–950 (10 steps) | Cool neutral greys |
+| `error` | 100–950 (10 steps) | Red status scale |
+| `warning` | 100–950 (10 steps) | Amber status scale |
+| `success` | 100–950 (10 steps) | Green status scale |
+| `info` | 100–950 (10 steps) | Blue status scale |
+| `white` / `black` | — | Standalone constants |
+
+Semantic tokens (49 across 8 groups) map roles to primitives, resolving differently per theme. See `tokens/color/semantic/light.json` and `dark.json`.
+
+The `scripts/generate-colors.ts` script reverse-maps Figma hex values to OKLCH coordinates for documentation and runs WCAG contrast analysis against semantic pairings.
+
 ## Adding / Modifying Tokens
 
 1. Edit the relevant JSON file in `tokens/`

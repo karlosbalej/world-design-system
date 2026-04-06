@@ -11,7 +11,9 @@
     "clean": "rm -rf build",
     "generate:palette": "tsx scripts/generate-palette.ts",
     "check:contrast": "tsx scripts/check-contrast.ts",
-    "push:figma": "tsx scripts/push-figma-variables.ts"
+    "push:figma": "tsx scripts/push-figma-variables.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "style-dictionary": "^5.3.3"
@@ -22,6 +24,7 @@
     "culori": "^4.0.2",
     "oxlint": "^1.51.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }

@@ -2,8 +2,11 @@
  * Push design tokens to Figma as Variables via the REST API.
  *
  * Creates/updates two variable collections:
- *   1. "Primitives" (1 mode: Default)  — raw color values
- *   2. "Semantic"   (2 modes: Light, Dark) — semantic tokens aliasing primitives
+ *   1. "Primitives" (1 mode: Default)  — raw color values, hidden from pickers
+ *   2. "Semantic"   (2 modes: Light, Dark) — tokens with codeSyntax, scopes, descriptions
+ *
+ * Reads source DTCG token JSONs directly (not built/flattened output) to preserve
+ * the exact hierarchy and enable proper VariableAlias chains.
  *
  * Requires environment variables:
  *   FIGMA_ACCESS_TOKEN — Personal access token with file_variables:write scope
@@ -15,6 +18,17 @@
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import {
+  walkTokenTree,
+  computeCodeSyntax,
+  deriveScopes,
+  parseTokenReference,
+  hexToFigmaColor,
+  resolveValue,
+  type FigmaColor,
+  type ModeValue,
+  type TokenEntry,
+} from './figma-push-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -34,93 +48,42 @@ if (!TOKEN || !FILE_KEY) {
 }
 
 // ---------------------------------------------------------------------------
-// Load built tokens
+// Load source token files
 // ---------------------------------------------------------------------------
 
-function loadJson<T = Record<string, unknown>>(path: string): T {
+function loadJson<T>(path: string): T {
   return JSON.parse(readFileSync(resolve(root, path), 'utf-8'));
 }
 
-const primitiveTokens = loadJson<Record<string, string>>('build/web/tokens.json');
-const lightTokens = loadJson<Record<string, string>>('build/web/light-theme.json');
-const darkTokens = loadJson<Record<string, string>>('build/web/dark-theme.json');
+const baseTokens = loadJson<Record<string, unknown>>('tokens/color/primitive/base.json');
+const specialtyTokens = loadJson<Record<string, unknown>>('tokens/color/primitive/specialty.json');
+const lightTokens = loadJson<Record<string, unknown>>('tokens/color/semantic/light.json');
+const darkTokens = loadJson<Record<string, unknown>>('tokens/color/semantic/dark.json');
+const descriptions = loadJson<Record<string, string>>('tokens/color/semantic/descriptions.json');
 
 // ---------------------------------------------------------------------------
-// Hex parsing
+// Extract token entries via tree walker
 // ---------------------------------------------------------------------------
 
-interface FigmaColor {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+const primitiveEntries = [
+  ...walkTokenTree(baseTokens),
+  ...walkTokenTree(specialtyTokens),
+];
+
+const lightEntries = walkTokenTree(lightTokens);
+const darkEntries = walkTokenTree(darkTokens);
+
+function semanticFigmaName(entry: TokenEntry): string {
+  return entry.path.slice(1).join('/');
 }
 
-function hexToFigmaColor(hex: string): FigmaColor {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.slice(0, 2), 16) / 255;
-  const g = parseInt(h.slice(2, 4), 16) / 255;
-  const b = parseInt(h.slice(4, 6), 16) / 255;
-  const a = h.length === 8 ? parseInt(h.slice(6, 8), 16) / 255 : 1;
-  return { r, g, b, a };
-}
+const lightByName = new Map<string, TokenEntry>();
+for (const e of lightEntries) lightByName.set(semanticFigmaName(e), e);
 
-// ---------------------------------------------------------------------------
-// Token key → Figma variable name
-// ---------------------------------------------------------------------------
+const darkByName = new Map<string, TokenEntry>();
+for (const e of darkEntries) darkByName.set(semanticFigmaName(e), e);
 
-/**
- * Convert camelCase key to Figma slash-separated path.
- * "colorGrey400" → "color/grey/400"
- * "semanticBackgroundPrimary" → "background/primary"
- */
-function primitiveKeyToName(key: string): string {
-  // Remove "color" prefix
-  if (!key.startsWith('color')) return key;
-  const rest = key.slice(5); // remove "color"
-
-  // Split on case boundaries and digits
-  const parts: string[] = [];
-  let current = '';
-
-  for (let i = 0; i < rest.length; i++) {
-    const ch = rest[i];
-    if (i > 0 && /[A-Z]/.test(ch) && /[a-z]/.test(rest[i - 1])) {
-      parts.push(current);
-      current = ch;
-    } else if (i > 0 && /\d/.test(ch) && !/\d/.test(rest[i - 1])) {
-      parts.push(current);
-      current = ch;
-    } else {
-      current += ch;
-    }
-  }
-  if (current) parts.push(current);
-
-  return 'color/' + parts.map((p) => p.toLowerCase()).join('/');
-}
-
-function semanticKeyToName(key: string): string {
-  // Remove "semantic" prefix
-  if (!key.startsWith('semantic')) return key;
-  const rest = key.slice(8); // remove "semantic"
-
-  const parts: string[] = [];
-  let current = '';
-
-  for (let i = 0; i < rest.length; i++) {
-    const ch = rest[i];
-    if (i > 0 && /[A-Z]/.test(ch) && /[a-z]/.test(rest[i - 1])) {
-      parts.push(current);
-      current = ch;
-    } else {
-      current += ch;
-    }
-  }
-  if (current) parts.push(current);
-
-  return parts.map((p) => p.toLowerCase()).join('/');
-}
+const allSemanticNames = [...new Set([...lightByName.keys(), ...darkByName.keys()])];
 
 // ---------------------------------------------------------------------------
 // Figma API helpers
@@ -182,19 +145,24 @@ interface VariableCreate {
   name: string;
   variableCollectionId: string;
   resolvedType: 'COLOR';
+  codeSyntax?: { WEB: string; ANDROID: string; iOS: string };
+  scopes?: string[];
+  description?: string;
 }
 
 interface VariableUpdate {
   action: 'UPDATE';
   id: string;
-  name: string;
-  variableCollectionId: string;
+  name?: string;
+  codeSyntax?: { WEB: string; ANDROID: string; iOS: string };
+  scopes?: string[];
+  description?: string;
 }
 
 interface VariableModeValue {
   variableId: string;
   modeId: string;
-  value: FigmaColor;
+  value: ModeValue;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,19 +178,15 @@ async function main(): Promise<void> {
   const collections = existing.meta.variableCollections;
   const variables = existing.meta.variables;
 
-  // Find or prepare to create collections
-  let primitivesCollection = Object.values(collections).find((c) => c.name === 'Primitives');
-  let semanticCollection = Object.values(collections).find((c) => c.name === 'Semantic');
+  const primitivesCollection = Object.values(collections).find((c) => c.name === 'Primitives');
+  const semanticCollection = Object.values(collections).find((c) => c.name === 'Semantic');
 
-  // Build variable name → id lookup
   const existingVarsByName = new Map<string, FigmaVariable>();
   for (const v of Object.values(variables)) {
-    existingVarsByName.set(v.name, v);
+    existingVarsByName.set(`${v.variableCollectionId}::${v.name}`, v);
   }
 
-  // Prepare batch request
-  const variableCreates: VariableCreate[] = [];
-  const variableUpdates: VariableUpdate[] = [];
+  const variableChanges: (VariableCreate | VariableUpdate)[] = [];
   const variableModeValues: VariableModeValue[] = [];
   const collectionCreates: { action: string; id: string; name: string; initialModeId?: string }[] = [];
   const modeCreates: { action: string; id: string; name: string; variableCollectionId: string }[] = [];
@@ -233,7 +197,7 @@ async function main(): Promise<void> {
     return `temp_${tempIdCounter++}`;
   }
 
-  // --- Primitives collection ---
+  // ----- Primitives collection -----
   let primCollId: string;
   let primModeId: string;
 
@@ -257,7 +221,7 @@ async function main(): Promise<void> {
     });
   }
 
-  // --- Semantic collection ---
+  // ----- Semantic collection -----
   let semCollId: string;
   let lightModeId: string;
   let darkModeId: string;
@@ -310,84 +274,124 @@ async function main(): Promise<void> {
     });
   }
 
-  // --- Create/update primitive variables ---
+  // ----- Primitive variables -----
+  const primitiveIdMap = new Map<string, string>();
+  const primitiveHexMap = new Map<string, string>();
   let createdCount = 0;
   let updatedCount = 0;
 
-  for (const [key, hex] of Object.entries(primitiveTokens)) {
-    const name = primitiveKeyToName(key);
-    const color = hexToFigmaColor(hex);
-    const existing = existingVarsByName.get(name);
+  for (const entry of primitiveEntries) {
+    const name = entry.path.join('/');
 
+    // Build hex resolution map
+    if (entry.rawValue.startsWith('#')) {
+      primitiveHexMap.set(name, entry.rawValue);
+    } else {
+      const ref = parseTokenReference(entry.rawValue);
+      if (ref) {
+        const refHex = primitiveHexMap.get(ref.join('/'));
+        if (refHex) primitiveHexMap.set(name, refHex);
+      }
+    }
+
+    const existingVar = existingVarsByName.get(`${primCollId}::${name}`);
     let varId: string;
-    if (existing && existing.variableCollectionId === primCollId) {
-      varId = existing.id;
+
+    if (existingVar) {
+      varId = existingVar.id;
+      variableChanges.push({
+        action: 'UPDATE',
+        id: varId,
+        scopes: [],
+      });
       updatedCount++;
     } else {
       varId = tempId();
-      variableCreates.push({
+      variableChanges.push({
         action: 'CREATE',
         id: varId,
         name,
         variableCollectionId: primCollId,
         resolvedType: 'COLOR',
+        scopes: [],
       });
       createdCount++;
     }
 
-    variableModeValues.push({
-      variableId: varId,
-      modeId: primModeId,
-      value: color,
-    });
+    primitiveIdMap.set(name, varId);
+
+    // Resolve value: alias to another primitive or raw hex
+    const resolved = resolveValue(entry.rawValue, primitiveIdMap, primitiveHexMap);
+    if (resolved) {
+      variableModeValues.push({ variableId: varId, modeId: primModeId, value: resolved });
+    } else {
+      console.warn(`Could not resolve value for primitive ${name}: ${entry.rawValue}`);
+    }
   }
 
-  // --- Create/update semantic variables ---
-  const allSemanticKeys = new Set([...Object.keys(lightTokens), ...Object.keys(darkTokens)]);
+  // ----- Semantic variables -----
+  for (const name of allSemanticNames) {
+    const segments = name.split('/');
+    const codeSyntax = computeCodeSyntax(segments);
+    const scopes = deriveScopes(name);
+    const description = descriptions[name] ?? '';
 
-  for (const key of allSemanticKeys) {
-    const name = semanticKeyToName(key);
-    const lightHex = lightTokens[key];
-    const darkHex = darkTokens[key];
-    const existing = existingVarsByName.get(name);
-
+    const existingVar = existingVarsByName.get(`${semCollId}::${name}`);
     let varId: string;
-    if (existing && existing.variableCollectionId === semCollId) {
-      varId = existing.id;
+
+    if (existingVar) {
+      varId = existingVar.id;
+      variableChanges.push({
+        action: 'UPDATE',
+        id: varId,
+        codeSyntax,
+        scopes,
+        description,
+      });
       updatedCount++;
     } else {
       varId = tempId();
-      variableCreates.push({
+      variableChanges.push({
         action: 'CREATE',
         id: varId,
         name,
         variableCollectionId: semCollId,
         resolvedType: 'COLOR',
+        codeSyntax,
+        scopes,
+        description,
       });
       createdCount++;
     }
 
-    if (lightHex) {
-      variableModeValues.push({
-        variableId: varId,
-        modeId: lightModeId,
-        value: hexToFigmaColor(lightHex),
-      });
+    // Light mode
+    const lightEntry = lightByName.get(name);
+    if (lightEntry) {
+      const resolved = resolveValue(lightEntry.rawValue, primitiveIdMap, primitiveHexMap);
+      if (resolved) {
+        variableModeValues.push({ variableId: varId, modeId: lightModeId, value: resolved });
+      } else {
+        console.warn(`Could not resolve light value for ${name}: ${lightEntry.rawValue}`);
+      }
     }
-    if (darkHex) {
-      variableModeValues.push({
-        variableId: varId,
-        modeId: darkModeId,
-        value: hexToFigmaColor(darkHex),
-      });
+
+    // Dark mode
+    const darkEntry = darkByName.get(name);
+    if (darkEntry) {
+      const resolved = resolveValue(darkEntry.rawValue, primitiveIdMap, primitiveHexMap);
+      if (resolved) {
+        variableModeValues.push({ variableId: varId, modeId: darkModeId, value: resolved });
+      } else {
+        console.warn(`Could not resolve dark value for ${name}: ${darkEntry.rawValue}`);
+      }
     }
   }
 
-  // --- Send batch request ---
+  // ----- Send batch request -----
   const payload: Record<string, unknown[]> = {};
   if (collectionCreates.length) payload.variableCollections = collectionCreates;
-  if (modeCreates.length || modeUpdates.length) payload.variableModes = [...modeCreates, ...modeUpdates];
-  if (variableCreates.length) payload.variables = variableCreates;
+  if (modeCreates.length || modeUpdates.length) payload.variableModes = [...modeUpdates, ...modeCreates];
+  if (variableChanges.length) payload.variables = variableChanges;
   if (variableModeValues.length) payload.variableModeValues = variableModeValues;
 
   console.log(`\nPushing to Figma file ${FILE_KEY}...`);

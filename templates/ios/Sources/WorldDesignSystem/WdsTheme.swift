@@ -3,7 +3,7 @@ import Foundation
 /// Semantic color set for the World Design System.
 /// All values are hex strings (e.g. "FFFFFF") – the consuming app bridges to its own color type.
 public struct WdsSemanticColors: Sendable {
-    // Background
+    // Surface
     public let surfacePrimary: String
     public let surfaceSecondary: String
     public let surfaceTertiary: String
@@ -13,8 +13,8 @@ public struct WdsSemanticColors: Sendable {
     public let textPrimary: String
     public let textSecondary: String
     public let textTertiary: String
+    public let textDisabled: String
     public let textInverse: String
-    public let textLink: String
     // Icon
     public let iconPrimary: String
     public let iconSecondary: String
@@ -26,21 +26,21 @@ public struct WdsSemanticColors: Sendable {
     public let borderDefault: String
     public let borderStrong: String
     public let borderFocus: String
+    public let borderDivider: String
+    public let borderTranslucent: String
     // Action
     public let actionPrimary: String
     public let actionPrimaryContent: String
     public let actionSecondary: String
-    public let actionSecondaryBorder: String
     public let actionSecondaryContent: String
     public let actionTertiary: String
     public let actionTertiaryContent: String
+    public let actionDestructive: String
+    public let actionDestructiveContent: String
     public let actionDisabled: String
     public let actionDisabledContent: String
-    // Control
-    public let controlOn: String
-    public let controlOff: String
-    public let controlThumb: String
-    public let controlOnContent: String
+    public let actionGhost: String
+    public let actionGhostContent: String
     // Input
     public let inputBackground: String
     public let inputBackgroundFocus: String
@@ -57,15 +57,9 @@ public struct WdsSemanticColors: Sendable {
     public let statusWarningBackground: String
     public let statusSuccessBackground: String
     public let statusInfoBackground: String
-    // Badge
-    public let badgeBackground: String
-    public let badgeText: String
-    public let badgeBorder: String
-    // Tab Bar
-    public let tabBarSelected: String
-    public let tabBarUnselected: String
-    public let tabBarBackground: String
-    public let tabBarBorder: String
+    // Accent
+    public let accentPrimary: String
+    public let accentContent: String
 }
 
 public enum WdsTheme {
@@ -78,8 +72,8 @@ public enum WdsTheme {
         textPrimary: WdsLightColorTokens.textPrimary,
         textSecondary: WdsLightColorTokens.textSecondary,
         textTertiary: WdsLightColorTokens.textTertiary,
+        textDisabled: WdsLightColorTokens.textDisabled,
         textInverse: WdsLightColorTokens.textInverse,
-        textLink: WdsLightColorTokens.textLink,
         iconPrimary: WdsLightColorTokens.iconPrimary,
         iconSecondary: WdsLightColorTokens.iconSecondary,
         iconTertiary: WdsLightColorTokens.iconTertiary,
@@ -89,19 +83,20 @@ public enum WdsTheme {
         borderDefault: WdsLightColorTokens.borderDefault,
         borderStrong: WdsLightColorTokens.borderStrong,
         borderFocus: WdsLightColorTokens.borderFocus,
+        borderDivider: WdsLightColorTokens.borderDivider,
+        borderTranslucent: WdsLightColorTokens.borderTranslucent,
         actionPrimary: WdsLightColorTokens.actionPrimary,
         actionPrimaryContent: WdsLightColorTokens.actionPrimaryContent,
         actionSecondary: WdsLightColorTokens.actionSecondary,
-        actionSecondaryBorder: WdsLightColorTokens.actionSecondaryBorder,
         actionSecondaryContent: WdsLightColorTokens.actionSecondaryContent,
         actionTertiary: WdsLightColorTokens.actionTertiary,
         actionTertiaryContent: WdsLightColorTokens.actionTertiaryContent,
+        actionDestructive: WdsLightColorTokens.actionDestructive,
+        actionDestructiveContent: WdsLightColorTokens.actionDestructiveContent,
         actionDisabled: WdsLightColorTokens.actionDisabled,
         actionDisabledContent: WdsLightColorTokens.actionDisabledContent,
-        controlOn: WdsLightColorTokens.controlOn,
-        controlOff: WdsLightColorTokens.controlOff,
-        controlThumb: WdsLightColorTokens.controlThumb,
-        controlOnContent: WdsLightColorTokens.controlOnContent,
+        actionGhost: WdsLightColorTokens.actionGhost,
+        actionGhostContent: WdsLightColorTokens.actionGhostContent,
         inputBackground: WdsLightColorTokens.inputBackground,
         inputBackgroundFocus: WdsLightColorTokens.inputBackgroundFocus,
         inputText: WdsLightColorTokens.inputText,
@@ -116,13 +111,8 @@ public enum WdsTheme {
         statusWarningBackground: WdsLightColorTokens.statusWarningBackground,
         statusSuccessBackground: WdsLightColorTokens.statusSuccessBackground,
         statusInfoBackground: WdsLightColorTokens.statusInfoBackground,
-        badgeBackground: WdsLightColorTokens.badgeBackground,
-        badgeText: WdsLightColorTokens.badgeText,
-        badgeBorder: WdsLightColorTokens.badgeBorder,
-        tabBarSelected: WdsLightColorTokens.tabBarSelected,
-        tabBarUnselected: WdsLightColorTokens.tabBarUnselected,
-        tabBarBackground: WdsLightColorTokens.tabBarBackground,
-        tabBarBorder: WdsLightColorTokens.tabBarBorder
+        accentPrimary: WdsLightColorTokens.accentPrimary,
+        accentContent: WdsLightColorTokens.accentContent
     )
 
     public static let dark = WdsSemanticColors(
@@ -134,8 +124,8 @@ public enum WdsTheme {
         textPrimary: WdsDarkColorTokens.textPrimary,
         textSecondary: WdsDarkColorTokens.textSecondary,
         textTertiary: WdsDarkColorTokens.textTertiary,
+        textDisabled: WdsDarkColorTokens.textDisabled,
         textInverse: WdsDarkColorTokens.textInverse,
-        textLink: WdsDarkColorTokens.textLink,
         iconPrimary: WdsDarkColorTokens.iconPrimary,
         iconSecondary: WdsDarkColorTokens.iconSecondary,
         iconTertiary: WdsDarkColorTokens.iconTertiary,
@@ -145,19 +135,20 @@ public enum WdsTheme {
         borderDefault: WdsDarkColorTokens.borderDefault,
         borderStrong: WdsDarkColorTokens.borderStrong,
         borderFocus: WdsDarkColorTokens.borderFocus,
+        borderDivider: WdsDarkColorTokens.borderDivider,
+        borderTranslucent: WdsDarkColorTokens.borderTranslucent,
         actionPrimary: WdsDarkColorTokens.actionPrimary,
         actionPrimaryContent: WdsDarkColorTokens.actionPrimaryContent,
         actionSecondary: WdsDarkColorTokens.actionSecondary,
-        actionSecondaryBorder: WdsDarkColorTokens.actionSecondaryBorder,
         actionSecondaryContent: WdsDarkColorTokens.actionSecondaryContent,
         actionTertiary: WdsDarkColorTokens.actionTertiary,
         actionTertiaryContent: WdsDarkColorTokens.actionTertiaryContent,
+        actionDestructive: WdsDarkColorTokens.actionDestructive,
+        actionDestructiveContent: WdsDarkColorTokens.actionDestructiveContent,
         actionDisabled: WdsDarkColorTokens.actionDisabled,
         actionDisabledContent: WdsDarkColorTokens.actionDisabledContent,
-        controlOn: WdsDarkColorTokens.controlOn,
-        controlOff: WdsDarkColorTokens.controlOff,
-        controlThumb: WdsDarkColorTokens.controlThumb,
-        controlOnContent: WdsDarkColorTokens.controlOnContent,
+        actionGhost: WdsDarkColorTokens.actionGhost,
+        actionGhostContent: WdsDarkColorTokens.actionGhostContent,
         inputBackground: WdsDarkColorTokens.inputBackground,
         inputBackgroundFocus: WdsDarkColorTokens.inputBackgroundFocus,
         inputText: WdsDarkColorTokens.inputText,
@@ -172,12 +163,7 @@ public enum WdsTheme {
         statusWarningBackground: WdsDarkColorTokens.statusWarningBackground,
         statusSuccessBackground: WdsDarkColorTokens.statusSuccessBackground,
         statusInfoBackground: WdsDarkColorTokens.statusInfoBackground,
-        badgeBackground: WdsDarkColorTokens.badgeBackground,
-        badgeText: WdsDarkColorTokens.badgeText,
-        badgeBorder: WdsDarkColorTokens.badgeBorder,
-        tabBarSelected: WdsDarkColorTokens.tabBarSelected,
-        tabBarUnselected: WdsDarkColorTokens.tabBarUnselected,
-        tabBarBackground: WdsDarkColorTokens.tabBarBackground,
-        tabBarBorder: WdsDarkColorTokens.tabBarBorder
+        accentPrimary: WdsDarkColorTokens.accentPrimary,
+        accentContent: WdsDarkColorTokens.accentContent
     )
 }
