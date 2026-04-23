@@ -1,0 +1,37 @@
+{
+  "action/primary": "Primary button and CTA background",
+  "action/primaryContent": "Text and icons on primary buttons",
+  "action/secondary": "Secondary button background",
+  "action/secondaryContent": "Text and icons on secondary buttons",
+  "action/tertiary": "Tertiary button background",
+  "action/tertiaryContent": "Text and icons on tertiary buttons",
+  "action/tertiaryBorder": "Tertiary (outlined) button border — keeps the button's fill/content/border trio in one namespace so they move together",
+  "action/destructive": "Destructive action button background",
+  "action/destructiveContent": "Text and icons on destructive buttons",
+  "action/disabled": "Disabled button background",
+  "action/disabledContent": "Text and icons on disabled buttons",
+  "action/ghost": "Ghost button background (semi-transparent)",
+  "action/ghostContent": "Text and icons on ghost buttons",
+
+  "input/background": "Default input field background",
+  "input/backgroundFocus": "Focused input field background",
+  "input/text": "Input field value text",
+  "input/placeholder": "Input placeholder and helper text",
+  "input/divider": "Divider inside input groups",
+  "input/error": "Input error border and message color",
+
+  "tabBar/background": "Bottom navigation bar surface",
+  "tabBar/border": "Top divider between tab bar and screen content",
+  "tabBar/itemActive": "Active tab bar item label and icon",
+  "tabBar/itemInactive": "Inactive tab bar item label and icon (replaces legacy Gray 450)",
+
+  "badge/notificationBackground": "Notification badge fill (red dot on tab bar, avatar, icons)",
+  "badge/notificationBorder": "Notification badge border — matches the surface behind the badge to create the \"hole\" ring effect",
+  "badge/notificationContent": "Text and icons inside notification badges",
+  "badge/countBackground": "Neutral count badge fill (unread counts, cart totals, non-urgent counters)",
+  "badge/countContent": "Text inside neutral count badges",
+
+  "card/background": "Default card fill (content cards, list-group cards, currency cards)",
+  "card/backgroundElevated": "Elevated card fill (cards that float above the base surface)",
+  "card/border": "Card border — use in place of border/subtle or border/default when outlining cards"
+}

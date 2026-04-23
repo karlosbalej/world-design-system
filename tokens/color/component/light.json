@@ -1,0 +1,45 @@
+{
+  "component": {
+    "action": {
+      "primary":              { "$value": "{color.grey.950}",  "$type": "color" },
+      "primaryContent":       { "$value": "{color.white}",     "$type": "color" },
+      "secondary":            { "$value": "{color.grey.100}",  "$type": "color" },
+      "secondaryContent":     { "$value": "{color.grey.950}",  "$type": "color" },
+      "tertiary":             { "$value": "{color.white}",     "$type": "color" },
+      "tertiaryContent":      { "$value": "{color.grey.950}",  "$type": "color" },
+      "tertiaryBorder":       { "$value": "{color.grey.200}",  "$type": "color" },
+      "destructive":          { "$value": "{color.error.600}", "$type": "color" },
+      "destructiveContent":   { "$value": "{color.white}",     "$type": "color" },
+      "disabled":             { "$value": "{color.grey.200}",  "$type": "color" },
+      "disabledContent":      { "$value": "{color.grey.400}",  "$type": "color" },
+      "ghost":                { "$value": "#FFFFFF14",          "$type": "color" },
+      "ghostContent":         { "$value": "{color.grey.950}",  "$type": "color" }
+    },
+    "input": {
+      "background":      { "$value": "{color.grey.100}",  "$type": "color" },
+      "backgroundFocus": { "$value": "{color.white}",     "$type": "color" },
+      "text":            { "$value": "{color.grey.950}",  "$type": "color" },
+      "placeholder":     { "$value": "{color.grey.700}",  "$type": "color" },
+      "divider":         { "$value": "{color.grey.300}",  "$type": "color" },
+      "error":           { "$value": "{color.error.600}", "$type": "color" }
+    },
+    "tabBar": {
+      "background":   { "$value": "{color.white}",    "$type": "color" },
+      "border":       { "$value": "{color.grey.100}", "$type": "color" },
+      "itemActive":   { "$value": "{color.grey.950}", "$type": "color" },
+      "itemInactive": { "$value": "{color.grey.600}", "$type": "color" }
+    },
+    "badge": {
+      "notificationBackground": { "$value": "{color.error.600}", "$type": "color" },
+      "notificationBorder":     { "$value": "{color.white}",     "$type": "color" },
+      "notificationContent":    { "$value": "{color.white}",     "$type": "color" },
+      "countBackground":        { "$value": "{color.grey.950}",  "$type": "color" },
+      "countContent":           { "$value": "{color.white}",     "$type": "color" }
+    },
+    "card": {
+      "background":         { "$value": "{color.grey.100}", "$type": "color" },
+      "backgroundElevated": { "$value": "{color.white}",    "$type": "color" },
+      "border":             { "$value": "{color.grey.100}", "$type": "color" }
+    }
+  }
+}
