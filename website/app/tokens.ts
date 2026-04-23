@@ -202,13 +202,19 @@ const hexToPrimitive = buildHexToPrimitiveName();
 function buildSemanticTokens(): SemanticToken[] {
   const tokens: SemanticToken[] = [];
 
+  // Tokens are emitted with either a `semantic` or `component` root prefix
+  // depending on which JSON tier they live in. The website surfaces them under
+  // the same display groups regardless of tier, so we match both prefixes.
   const groupPatterns = [
     { prefix: "semanticBackground", group: "Background", label: "background" },
-    { prefix: "semanticText", group: "Text", label: "text" },
-    { prefix: "semanticBorder", group: "Border", label: "border" },
-    { prefix: "semanticAction", group: "Action", label: "action" },
-    { prefix: "semanticStatus", group: "Status", label: "status" },
-    { prefix: "semanticTabBar", group: "Tab Bar", label: "tabBar" },
+    { prefix: "semanticText",       group: "Text",       label: "text" },
+    { prefix: "semanticBorder",     group: "Border",     label: "border" },
+    { prefix: "semanticStatus",     group: "Status",     label: "status" },
+    { prefix: "componentAction",    group: "Action",     label: "action" },
+    { prefix: "componentInput",     group: "Input",      label: "input" },
+    { prefix: "componentTabBar",    group: "Tab Bar",    label: "tabBar" },
+    { prefix: "componentBadge",     group: "Badge",      label: "badge" },
+    { prefix: "componentCard",      group: "Card",       label: "card" },
   ];
 
   for (const [key, lightValue] of Object.entries(lightThemeTokens)) {

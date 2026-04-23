@@ -65,19 +65,26 @@ export const composeColorObject: Format = {
 };
 
 /**
- * compose/themeColors – Generates a Kotlin object for semantic theme colors
- * (light or dark). References resolved hex values directly.
+ * compose/themeColors – Generates a Kotlin object for theme colors
+ * (light or dark). Includes both the semantic tier (surface/text/icon/border/
+ * status/accent) and the component tier (action/input/badge/card/tabBar).
+ * References resolved hex values directly.
  */
 export const composeThemeColors: Format = {
   name: 'compose/themeColors',
   format: ({ dictionary, options }: FormatFnArguments) => {
     const objectName = (options.objectName as string) || 'LightColorTokens';
     const tokens = dictionary.allTokens.filter(
-      (t) => t.$type === 'color' && t.path[0] === 'semantic',
+      (t) =>
+        t.$type === 'color' &&
+        (t.path[0] === 'semantic' || t.path[0] === 'component'),
     );
 
     const lines = tokens.map((token) => {
-      const name = camelCase(token.path.slice(1)); // drop "semantic" prefix
+      // Drop the tier prefix ("semantic" or "component") so both tiers share
+      // the same Kotlin names they used before the migration (e.g.
+      // `actionPrimary`, `surfacePrimary`).
+      const name = camelCase(token.path.slice(1));
       const hex = (token.$value || token.value) as string;
       return `    val ${name} = Color(${hexToArgb(hex)})`;
     });

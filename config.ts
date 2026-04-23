@@ -69,10 +69,21 @@ const webOut = 'build/web';
 async function buildTheme(theme: 'light' | 'dark'): Promise<void> {
   const semanticFile =
     theme === 'light' ? 'tokens/color/semantic/light.json' : 'tokens/color/semantic/dark.json';
+  const componentFile =
+    theme === 'light' ? 'tokens/color/component/light.json' : 'tokens/color/component/dark.json';
   const themeLabel = theme.charAt(0).toUpperCase() + theme.slice(1);
 
+  // Predicate: tokens emitted in the per-theme "theme color" outputs.
+  // Post-migration, this includes both the pure semantic tier
+  // (surface/text/icon/border/status/accent) and the component tier
+  // (action/input/badge/card/tabBar). Both roots ship in the same theme files
+  // to avoid breaking downstream consumers (Android/iOS/Web apps).
+  const isThemeColor = (token: TransformedToken): boolean =>
+    token.$type === 'color' &&
+    (token.path[0] === 'semantic' || token.path[0] === 'component');
+
   const sd = new StyleDictionary({
-    source: [...primitiveSources, semanticFile],
+    source: [...primitiveSources, semanticFile, componentFile],
     platforms: {
       'android-primitives': {
         buildPath: `${androidOut}/`,
@@ -108,8 +119,7 @@ async function buildTheme(theme: 'light' | 'dark'): Promise<void> {
             destination: `Wds${themeLabel}ColorTokens.kt`,
             format: 'compose/themeColors',
             options: { objectName: `Wds${themeLabel}ColorTokens` },
-            filter: (token: TransformedToken) =>
-              token.$type === 'color' && token.path[0] === 'semantic',
+            filter: isThemeColor,
           },
         ],
       },
@@ -146,8 +156,7 @@ async function buildTheme(theme: 'light' | 'dark'): Promise<void> {
             destination: `Wds${themeLabel}ColorTokens.swift`,
             format: 'swift/wldColorTheme',
             options: { structName: `Wds${themeLabel}ColorTokens` },
-            filter: (token: TransformedToken) =>
-              token.$type === 'color' && token.path[0] === 'semantic',
+            filter: isThemeColor,
           },
         ],
       },
@@ -206,14 +215,12 @@ async function buildTheme(theme: 'light' | 'dark'): Promise<void> {
                 ? ':root, [data-theme="light"]'
                 : '[data-theme="dark"]',
             },
-            filter: (token: TransformedToken) =>
-              token.$type === 'color' && token.path[0] === 'semantic',
+            filter: isThemeColor,
           },
           {
             destination: `${theme}-theme.json`,
             format: 'json/flat',
-            filter: (token: TransformedToken) =>
-              token.$type === 'color' && token.path[0] === 'semantic',
+            filter: isThemeColor,
           },
         ],
       },

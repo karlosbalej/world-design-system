@@ -47,13 +47,18 @@ export const swiftColorDefaults: Format = {
 
 /**
  * swift/wldColorTheme – Standalone LightTheme / DarkTheme with String hex constants.
+ * Emits both the semantic tier and the component tier; the shared `camelCase`
+ * name (without the tier prefix) keeps Swift call sites identical pre- and
+ * post-migration.
  */
 export const swiftColorTheme: Format = {
   name: 'swift/wldColorTheme',
   format: ({ dictionary, options }: FormatFnArguments) => {
     const structName = (options.structName as string) || 'WdsLightColorTokens';
     const tokens = dictionary.allTokens.filter(
-      (t) => t.$type === 'color' && t.path[0] === 'semantic',
+      (t) =>
+        t.$type === 'color' &&
+        (t.path[0] === 'semantic' || t.path[0] === 'component'),
     );
 
     const lines = tokens.map((token) => {

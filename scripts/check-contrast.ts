@@ -130,9 +130,13 @@ const pairings: Pairing[] = [
 
 type ThemeTokens = Record<string, string>;
 
-function prefixKey(key: string): string {
-  // Token keys in the built JSON use "semantic" prefix: "semanticTextPrimary"
-  return `semantic${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+// Tokens in the built flat JSON are prefixed by the JSON root they live in —
+// either `semantic` (surface/text/icon/border/status/accent) or `component`
+// (action/input/badge/card/tabBar). Probe both so this script keeps working
+// as tokens are promoted/demoted between tiers.
+function lookupToken(tokens: ThemeTokens, key: string): string | undefined {
+  const tail = key.charAt(0).toUpperCase() + key.slice(1);
+  return tokens[`semantic${tail}`] ?? tokens[`component${tail}`];
 }
 
 function checkTheme(
@@ -143,10 +147,8 @@ function checkTheme(
   const failures: string[] = [];
 
   for (const { fg, bg, minLc, label } of pairings) {
-    const fgKey = prefixKey(fg);
-    const bgKey = prefixKey(bg);
-    const fgHex = tokens[fgKey];
-    const bgHex = tokens[bgKey];
+    const fgHex = lookupToken(tokens, fg);
+    const bgHex = lookupToken(tokens, bg);
 
     if (!fgHex || !bgHex) {
       // Token not yet present — skip (will be added)

@@ -40,14 +40,19 @@ export const cssColorVariables: Format = {
 };
 
 /**
- * css/themeVariables – CSS custom properties for semantic theme colors.
+ * css/themeVariables – CSS custom properties for theme colors (semantic tier
+ * + component tier). Both tiers land in the same per-theme stylesheet, keyed
+ * by `--wds-{kebabName}` using the path minus the tier prefix so existing
+ * consumers keep using `--wds-action-primary`, `--wds-surface-primary`, etc.
  */
 export const cssThemeVariables: Format = {
   name: 'css/themeVariables',
   format: ({ dictionary, options }: FormatFnArguments) => {
     const selector = (options.selector as string) || ':root';
     const tokens = dictionary.allTokens.filter(
-      (t) => t.$type === 'color' && t.path[0] === 'semantic',
+      (t) =>
+        t.$type === 'color' &&
+        (t.path[0] === 'semantic' || t.path[0] === 'component'),
     );
 
     const lines = tokens.map((token) => {
